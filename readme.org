@@ -3,6 +3,23 @@
 
 Shell enhancements for =Emacs=.
 
+** Features
+   - Spawn a command in a separate buffer (~shell+-async-shell-buffer~).
+     - This has an eshell alias: ~async~. My preference is to use
+       ~display-buffer-alist~ to make the opened buffer split the current window
+       below. This lets you spawn long-running commands and keep an eye on them
+       while leaving your main shell buffer free.
+   - Spawn a command without a buffer (~shell+-async-shell-no-buffer~).
+   - Provide ~shell+-eshell~ which will:
+     - Keep a unique history per eshell buffer it opens.
+     - When calling with a prefix arg, ask for a name and history file.
+     - Open a new eshell buffer if there are none that are free.
+   - ~shell+-eshell-cd~ is the same as ~shell+-eshell~ except:
+     - Change to the directory of the buffer that was focused.
+   - Search eshell history (~shell+-eshell-insert-history~).
+   - Helper function for prompting for choices (~shell+-prompt~).
+   - Hibernate and lock commands.
+
 ** Usage
    I use [[https://github.com/jwiegley/use-package][use-package]] and [[https://github.com/raxod502/straight.el][straight.el]]:
 
@@ -43,20 +60,3 @@ Shell enhancements for =Emacs=.
 
    This will let you use ~shell+-eshell~ for the other enhancements while keeping
    a global history between all the shells.
-
-** Features
-   - Spawn a command in a separate buffer (~shell+-async-shell-buffer~).
-     - This has an eshell alias: ~async~. My preference is to use
-       ~display-buffer-alist~ to make the opened buffer split the current window
-       below. This lets you spawn long-running commands and keep an eye on them
-       while leaving your main shell buffer free.
-   - Spawn a command without a buffer (~shell+-async-shell-no-buffer~).
-   - Provide ~shell+-eshell~ which will:
-     - Keep a unique history per eshell buffer it opens.
-     - When calling with a prefix arg, ask for a name and history file.
-     - Open a new eshell buffer if there are none that are free.
-   - ~shell+-eshell-cd~ is the same as ~shell+-eshell~ except:
-     - Change to the directory of the buffer that was focused.
-   - Search eshell history.
-   - Helper function for prompting for choices.
-   - Hibernate and lock commands.
