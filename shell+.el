@@ -28,7 +28,6 @@
 
 ;;; Code:
 
-(require 'f)
 (require 'eshell)
 (require 'esh-mode)
 (require 'em-hist)
@@ -163,7 +162,7 @@ and for a suffix if one wasn't provided."
               (if (and shell+-eshell-unique-history arg)
                   (expand-file-name
                    (substring-no-properties
-                    (read-file-name "History file: " (f-dirname default-history-file-path))))
+                    (read-file-name "History file: " (file-name-directory default-history-file-path))))
                 default-history-file-path)))
         (when (and arg eshell-suffix)
           (add-to-list 'shell+--known-eshell-suffixes eshell-suffix))
