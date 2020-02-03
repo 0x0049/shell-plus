@@ -134,7 +134,6 @@ If no ARGS are provided, prompt for the command."
   (when shell+--eshell-history-file-path
     (setq-local eshell-history-file-name shell+--eshell-history-file-path)))
 
-;;;###autoload
 (add-hook 'eshell-hist-load-hook #'shell+--eshell-set-history-file)
 
 ;;;###autoload

@@ -25,7 +25,8 @@ Shell enhancements for =Emacs=.
 
    #+begin_src elisp
    (use-package shell+
-     :straight (:host github :repo "0x0049/shell-plus"))
+     :straight (:host github :repo "0x0049/shell-plus")
+     :defer t)
    #+end_src
 
    To bind a key for the search history, try:
