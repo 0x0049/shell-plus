@@ -24,10 +24,6 @@ Shell enhancements for =Emacs=.
    I use [[https://github.com/jwiegley/use-package][use-package]] and [[https://github.com/raxod502/straight.el][straight.el]]:
 
    #+begin_src elisp
-   ;; History timer depends on timer+.
-   (use-package timer+
-     :straight (:host github :repo "0x0049/timer-plus"))
-
    (use-package shell+
      :straight (:host github :repo "0x0049/shell-plus")
      :after timer+)
