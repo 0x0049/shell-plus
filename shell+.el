@@ -110,7 +110,12 @@ ARGS are simply concatenated with spaces.
 
 If no ARGS are provided, prompt for the command."
   (interactive (list (read-shell-command "$ ")))
-  (let* ((command (mapconcat 'identity args " " ))
+  (let* ((command (mapconcat
+                   #'(lambda (a)
+                       (if (numberp a)
+                           (number-to-string a)
+                         a))
+                   args " " ))
          (output-buffer (concat "*" command "*")))
     (async-shell-command command output-buffer)))
 
