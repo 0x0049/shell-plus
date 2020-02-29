@@ -188,31 +188,6 @@ suffix for the buffer name."
       (goto-char (point-max))
       (eshell-send-input nil t))))
 
-(defun shell+--disable-margin (&rest args)
-  "Disable scroll margin, ignoring ARGS."
-  (setq-local scroll-margin 0))
-
-(defun shell+--reset-margin ()
-  "Reset scroll margin."
-  (setq-local scroll-margin (default-value 'scroll-margin)))
-
-(defun shell+--comint-reset-margin (process &rest args)
-  "Reset scroll margin if the command has ended.
-
-Ignore ARGS and use PROCESS to compare its position against the
-last prompt. When they differ, the output has ended."
-  (unless (equal (car comint-last-prompt) (process-mark process))
-    (shell+--reset-margin)))
-
-;; Remove the scroll margin when a command is running and re-enable once it has
-;; finished. This allows using the maximum space for long-running commands.
-(add-hook 'eshell-pre-command-hook #'shell+--disable-margin)
-(add-hook 'eshell-post-command-hook #'shell+--reset-margin)
-
-(add-hook 'comint-mode-hook #'shell+--disable-margin)
-(add-hook 'comint-input-filter-functions #'shell+--disable-margin)
-(advice-add 'comint-output-filter :after #'shell+--comint-reset-margin)
-
 ;;;###autoload
 (defun shell+-eshell-insert-history ()
   "Interactively insert eshell history.
