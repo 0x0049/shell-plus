@@ -43,7 +43,7 @@
   :type 'boolean
   :group 'shell+)
 
-(defcustom shell+-lock-command "xset s activate"
+(defcustom shell+-lock-command "loginctl lock-session"
   "Command for locking the screen."
   :type 'string
   :group 'shell+)
