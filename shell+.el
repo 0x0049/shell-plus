@@ -53,6 +53,11 @@
   :type 'string
   :group 'shell+)
 
+(defcustom shell+-hibernate-hook nil
+  "Hook run bfore hibernating."
+  :type 'hook
+  :group 'shell+)
+
 (defvar shell+--eshell-history-file-path nil "Full path of the eshell history file.")
 
 ;; This is to make it less annoying to switch to manually suffixed buffers.
@@ -68,6 +73,7 @@
 (defun shell+-hibernate ()
   "Hibernate the system."
   (interactive)
+  (run-hooks 'shell+-hibernate-hook)
   (shell+-async-shell-no-buffer shell+-hibernate-command))
 
 ;;;###autoload
