@@ -56,25 +56,25 @@
 (ert-deftest shell+-eshell-manual-test()
   "Test that manual suffixes and history files work."
   (shell+--cleanup)
-  (with-simulated-input "suffix-1 RET //path/to/file-1 RET"
+  (with-simulated-input "suffix-1 RET //path/to RET"
     (shell+-eshell nil t))
   (should (string= "*eshell suffix-1*" (buffer-name)))
-  (should (string= "/path/to/file-1" eshell-history-file-name))
+  (should (string= "/path/to/*eshell-suffix-1*" eshell-history-file-name))
 
-  (with-simulated-input "//path/to/file-2/ RET"
+  (with-simulated-input "//path/to/ RET"
     (shell+-eshell "suffix-2" t))
-  (should (string= "/path/to/file-2/" eshell-history-file-name))
   (should (string= "*eshell suffix-2*" (buffer-name)))
+  (should (string= "/path/to/*eshell-suffix-2*" eshell-history-file-name))
   (should (equal '("suffix-2" "suffix-1") shell+--known-eshell-suffixes))
 
   ;; Since the buffer already exists it shouldn't ask for the history file.
   (with-simulated-input "suffix-1 RET" (shell+-eshell nil t))
   (should (string= "*eshell suffix-1*" (buffer-name)))
-  (should (string= "/path/to/file-1" eshell-history-file-name))
+  (should (string= "/path/to/*eshell-suffix-1*" eshell-history-file-name))
 
   (shell+-eshell "suffix-2" t)
-  (should (string= "/path/to/file-2/" eshell-history-file-name))
-  (should (string= "*eshell suffix-2*" (buffer-name))))
+  (should (string= "*eshell suffix-2*" (buffer-name)))
+  (should (string= "/path/to/*eshell-suffix-2*" eshell-history-file-name)))
 
 (ert-deftest shell+-eshell-no-unique-test ()
   "Test that a eshell buffers do *not* have unique history files."
@@ -89,6 +89,21 @@
   (should (string= "*eshell*" (buffer-name)))
   (should (eq 2 (length (shell+--get-eshell-buffers))))
   (should (string= (expand-file-name "history" eshell-directory-name) eshell-history-file-name)))
+
+(ert-deftest shell+-eshell-busy-test ()
+  "Test that a new shell is opened if the existing one is busy."
+  (shell+-eshell)
+  (should (string= "*eshell*" (buffer-name)))
+  (should (string= (expand-file-name "*eshell*" eshell-directory-name) eshell-history-file-name))
+  (insert "sleep inf")
+  (eshell-send-input)
+
+  (shell+-eshell)
+  (should (string= "*eshell*<2>" (buffer-name)))
+  (should (string= (expand-file-name "*eshell*<2>" eshell-directory-name) eshell-history-file-name))
+
+  (switch-to-buffer "*eshell*")
+  (eshell-interrupt-process))
 
 (provide 'shell+-test)
 

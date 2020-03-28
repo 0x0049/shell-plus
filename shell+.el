@@ -58,7 +58,7 @@
   :type 'hook
   :group 'shell+)
 
-(defvar shell+--eshell-history-file-path nil "Full path of the eshell history file.")
+(defvar shell+--eshell-history-directory-name nil "Full path of the eshell history directory.")
 
 ;; This is to make it less annoying to switch to manually suffixed buffers.
 (defvar shell+--known-eshell-suffixes nil "Manually typed eshell suffixes.")
@@ -139,11 +139,11 @@ If no ARGS are provided, prompt for the command."
 
 (defun shell+--eshell-set-history-file ()
   "Set history file for the buffer."
-  ;; Setting eshell-buffer-name works but eshell-history-file-path does not seem
-  ;; to operate the same way (not sure why). As a workaround, use a separate
-  ;; variable and then set the history file name locally in this hook.
-  (when shell+--eshell-history-file-path
-    (setq-local eshell-history-file-name shell+--eshell-history-file-path)))
+  (when shell+--eshell-history-directory-name
+    (setq-local eshell-history-file-name
+                (expand-file-name
+                 (replace-regexp-in-string " " "-" (buffer-name))
+                 shell+--eshell-history-directory-name))))
 
 (add-hook 'eshell-hist-load-hook #'shell+--eshell-set-history-file)
 
@@ -153,7 +153,7 @@ If no ARGS are provided, prompt for the command."
 
 SUFFIX is used in the buffer name if provided.
 
-With \\[universal-argument] or ARG, ask for the history file path
+With \\[universal-argument] or ARG, ask for the history directory
 and for a suffix if one wasn't provided."
   (let* ((eshell-suffix (or suffix
                             (and arg (shell+-prompt "Suffix"
@@ -163,17 +163,13 @@ and for a suffix if one wasn't provided."
          (eshell-buffer (shell+--find-inactive-eshell-buffer eshell-buffer-name)))
     (if eshell-buffer
         (switch-to-buffer eshell-buffer)
-      (let* ((default-history-file-path
-               (when shell+-eshell-unique-history
-                 (expand-file-name
-                  (replace-regexp-in-string " " "-" eshell-buffer-name)
-                  eshell-directory-name)))
-             (shell+--eshell-history-file-path
-              (if (and shell+-eshell-unique-history arg)
-                  (expand-file-name
-                   (substring-no-properties
-                    (read-file-name "History file: " (file-name-directory default-history-file-path))))
-                default-history-file-path)))
+      (let ((shell+--eshell-history-directory-name
+             (when shell+-eshell-unique-history
+               (if arg
+                   (expand-file-name
+                    (substring-no-properties
+                     (read-directory-name "History directory: " eshell-directory-name)))
+                 eshell-directory-name))))
         (when (and arg eshell-suffix)
           (add-to-list 'shell+--known-eshell-suffixes eshell-suffix))
         (eshell t)))))
