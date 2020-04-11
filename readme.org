@@ -1,4 +1,4 @@
-#+TITLE: shell+ • [[https://travis-ci.org/0x0049/shell-plus.svg?branch=master]]
+#+TITLE: shell+ • [[https://travis-ci.org/0x0049/shell-plus][https://travis-ci.org/0x0049/shell-plus.svg?branch=master]]
 #+STARTUP: showeverything
 
 Shell enhancements for =Emacs=.
