@@ -1,7 +1,7 @@
-;;; shell+.el --- Shell enhancements for Emacs.
+;;; shell+.el --- Shell enhancements for Emacs. -*- lexical-binding: t -*-
 
 ;; Copyright (c) 2020 0x0049
-;;
+
 ;; Author: 0x0049 <dev@0x0049.me>
 ;; URL: https://github.com/0x0049/shell-plus
 ;; Keywords: shell
