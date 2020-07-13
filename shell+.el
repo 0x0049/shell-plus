@@ -58,8 +58,6 @@
   :type 'hook
   :group 'shell+)
 
-(defvar shell+--eshell-history-directory-name nil "Full path of the eshell history directory.")
-
 ;; This is to make it less annoying to switch to manually suffixed buffers.
 (defvar shell+--known-eshell-suffixes nil "Manually typed eshell suffixes.")
 
@@ -139,11 +137,11 @@ If no ARGS are provided, prompt for the command."
 
 (defun shell+--eshell-set-history-file ()
   "Set history file for the buffer."
-  (when shell+--eshell-history-directory-name
+  (when shell+-eshell-unique-history
     (setq-local eshell-history-file-name
                 (expand-file-name
-                 (replace-regexp-in-string " " "-" (buffer-name))
-                 shell+--eshell-history-directory-name))))
+                 (replace-regexp-in-string "[ /]" "-" (buffer-name))
+                 eshell-directory-name))))
 
 (add-hook 'eshell-hist-load-hook #'shell+--eshell-set-history-file)
 
@@ -163,13 +161,12 @@ and for a suffix if one wasn't provided."
          (eshell-buffer (shell+--find-inactive-eshell-buffer eshell-buffer-name)))
     (if eshell-buffer
         (switch-to-buffer eshell-buffer)
-      (let ((shell+--eshell-history-directory-name
-             (when shell+-eshell-unique-history
-               (if arg
-                   (expand-file-name
-                    (substring-no-properties
-                     (read-directory-name "History directory: " eshell-directory-name)))
-                 eshell-directory-name))))
+      (let ((eshell-directory-name
+             (if (and shell+-eshell-unique-history arg)
+               (expand-file-name
+                (substring-no-properties
+                 (read-directory-name "History directory: " eshell-directory-name)))
+               eshell-directory-name)))
         (when (and arg eshell-suffix)
           (add-to-list 'shell+--known-eshell-suffixes eshell-suffix))
         (eshell t)))))
